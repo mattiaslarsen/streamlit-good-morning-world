@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import plotly.express as px
 
 # Läsa in det förberedda datasetet
 df = pd.read_csv('prepared_suicide_statistics.csv')
@@ -21,17 +20,10 @@ filtered_data = df[(df['country'] == country) & (df['year'] == year)]
 st.subheader(f'Suicide Rates in {country} for {year}')
 
 # Line plot över tid för valda landet
-fig, ax = plt.subplots()
-sns.lineplot(data=df[df['country'] == country], x='year', y='suicide_rate', hue='sex', ax=ax)
-ax.set_title(f'Suicide Rates Over Time in {country}')
-ax.set_xlabel('Year')
-ax.set_ylabel('Suicide Rate per 100,000')
-st.pyplot(fig)
+line_data = df[df['country'] == country]
+fig1 = px.line(line_data, x='year', y='suicide_rate', color='sex', title='Suicide Rates Over Time')
+st.plotly_chart(fig1)
 
 # Bar plot för åldersgrupper och kön
-fig, ax = plt.subplots()
-sns.barplot(data=filtered_data, x='age', y='suicide_rate', hue='sex', ax=ax)
-ax.set_title(f'Suicide Rates by Age Group and Sex in {country} for {year}')
-ax.set_xlabel('Age Group')
-ax.set_ylabel('Suicide Rate per 100,000')
-st.pyplot(fig)
+fig2 = px.bar(filtered_data, x='age', y='suicide_rate', color='sex', barmode='group', title='Suicide Rates by Age Group and Sex')
+st.plotly_chart(fig2)
